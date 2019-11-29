@@ -29,6 +29,7 @@ import * as walletLinkBlockedDialog from "./walletLinkBlockedDialog"
 import {EthereumTransactionParams} from "./WalletLinkRelay";
 import {Web3ResponseMessage} from "./types/Web3ResponseMessage";
 import bind from "bind-decorator";
+import {WalletLinkProvider} from "./WalletLinkProvider";
 
 type ResponseCallback = (response: Web3Response) => void
 
@@ -59,7 +60,24 @@ export class TrustRelay {
 
   public injectIframe(): void {
     console.log(`Inject iframe`);
-    window.trustMessage = this.handleMessage;
+    ((WalletLinkProvider.prototype) as any).trustMessage = this.handleMessage;
+    ((WalletLinkProvider.prototype) as any).sendResponse = (id: string, addresses: string[]) => {
+      this.handleMessage({
+        data: {
+          id,
+          response: {result: addresses}
+        }
+      } as MessageEvent);
+    };
+
+    ((WalletLinkProvider.prototype) as any).sendError = (id: string, message: string) => {
+      this.handleMessage({
+        data: {
+          id,
+          response: {errorMessage: message}
+        }
+      } as MessageEvent)
+    };
   }
 
   public getStorageItem(key: string): string | null {
