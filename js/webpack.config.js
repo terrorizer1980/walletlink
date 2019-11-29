@@ -37,8 +37,8 @@ module.exports = {
     symlinks: false
   },
   output: {
-    filename: "walletlink.js",
-    path: path.resolve(__dirname, "build")
+    filename: "trust-min.js",
+    path: path.resolve(__dirname, "../../dist")
   },
   performance: {
     hints: false

@@ -6,6 +6,8 @@ import { injectCssReset } from "./lib/cssReset"
 import { WalletLinkProvider } from "./provider/WalletLinkProvider"
 import { WalletLinkRelay } from "./relay/WalletLinkRelay"
 import { getFavicon } from "./util"
+import { Relay } from "./Relay"
+import { TrustWeb3Provider } from "./trust/TrustWeb3Provider"
 
 const WALLETLINK_URL =
   process.env.WALLETLINK_URL! || "https://www.walletlink.org"
@@ -24,6 +26,7 @@ export interface WalletLinkOptions {
   darkMode?: boolean
   /** @optional WalletLink server URL; for most, leave it unspecified */
   walletLinkUrl?: string
+  relay?: Relay
 }
 
 export class WalletLink {
@@ -34,14 +37,14 @@ export class WalletLink {
 
   private _appName = ""
   private _appLogoUrl: string | null = null
-  private _relay: WalletLinkRelay
+  private _relay: Relay
 
   /**
    * Constructor
    * @param options WalletLink options object
    */
   constructor(options: Readonly<WalletLinkOptions>) {
-    this._relay = new WalletLinkRelay({
+    this._relay = options.relay || new WalletLinkRelay({
       walletLinkUrl: options.walletLinkUrl || WALLETLINK_URL,
       version: WALLETLINK_VERSION,
       darkMode: !!options.darkMode
@@ -59,10 +62,12 @@ export class WalletLink {
    */
   public makeWeb3Provider(
     jsonRpcUrl: string,
-    chainId: number = 1
+    chainId: number = 1,
+    relay?: Relay
   ): WalletLinkProvider {
-    return new WalletLinkProvider({
-      relay: this._relay,
+    relay = relay || this._relay
+    return new TrustWeb3Provider({
+      relay,
       jsonRpcUrl,
       chainId
     })

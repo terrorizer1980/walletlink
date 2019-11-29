@@ -1,6 +1,6 @@
 {
-  "name": "walletlink",
-  "version": "2.0.2",
+  "name": "trust-walletlink",
+  "version": "1.0.0",
   "description": "WalletLink JavaScript SDK",
   "keywords": [
     "cipher",
@@ -40,8 +40,11 @@
     "bind-decorator": "^1.0.11",
     "bn.js": "^5.1.1",
     "clsx": "^1.1.0",
+    "es6-promise": "^4.2.8",
+    "isomorphic-fetch": "^2.2.1",
     "preact": "^10.4.6",
-    "rxjs": "^6.6.0"
+    "rxjs": "^6.6.0",
+    "web3": "^1.2.11"
   },
   "devDependencies": {
     "@types/bn.js": "^4.11.6",
@@ -72,10 +75,16 @@
     "node": ">= 10.0.0"
   },
   "jest": {
+    "automock": false,
+    "globals": {
+      "ts-jest": {
+        "diagnostics": false
+      }
+    },
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
-    "testEnvironment": "node",
+    "testEnvironment": "jsdom",
     "testPathIgnorePatterns": [
       "<rootDir>/dist/",
       "<rootDir>/node_modules/"
@@ -83,6 +92,7 @@
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
     "moduleFileExtensions": [
       "ts",
+      "tsx",
       "js",
       "json"
     ]

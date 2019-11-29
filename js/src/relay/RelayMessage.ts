@@ -14,4 +14,5 @@ export enum RelayMessageType {
 
 export interface RelayMessage<T extends RelayMessageType = any> {
   type: T
+  request?: any
 }
