@@ -5,6 +5,7 @@ import { WalletLinkNotification } from "./WalletLinkNotification"
 import { WalletLinkProvider } from "./WalletLinkProvider"
 import { WalletLinkRelay } from "./WalletLinkRelay"
 import {TrustWeb3Provider} from "./TrustWeb3Provider";
+import {Relay} from "./Relay";
 
 const WALLETLINK_URL =
   process.env.WALLETLINK_URL! || "https://www.walletlink.org"
@@ -17,7 +18,7 @@ export interface WalletLinkOptions {
   appName?: string
   appLogoUrl?: string | null
   walletLinkUrl?: string
-  relay?: WalletLinkRelay
+  relay?: Relay
 }
 
 export class WalletLink {
@@ -25,7 +26,7 @@ export class WalletLink {
 
   private _appName = ""
   private _appLogoUrl: string | null = null
-  private _relay: WalletLinkRelay
+  private _relay: Relay
 
   constructor(options: Readonly<WalletLinkOptions>) {
     this._relay = options.relay || new WalletLinkRelay({
@@ -39,7 +40,7 @@ export class WalletLink {
   public makeWeb3Provider(
     jsonRpcUrl: string,
     chainId: number = 1,
-    relay?: WalletLinkRelay
+    relay?: Relay
   ): WalletLinkProvider {
     relay = relay || this._relay;
     return new TrustWeb3Provider({

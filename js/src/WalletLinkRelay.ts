@@ -48,6 +48,7 @@ import {
   WalletLinkNotification,
   WalletLinkNotificationOptions
 } from "./WalletLinkNotification"
+import {Relay} from "./Relay";
 
 const LOCAL_STORAGE_SESSION_ID_KEY = "SessionId"
 
@@ -72,7 +73,7 @@ const BLOCKED_LOCAL_STORAGE_ERROR_MESSAGE =
   "Browser is blocking third-party localStorage usage. To continue, " +
   "turn off third-party storage blocking or whitelist WalletLink."
 
-export class WalletLinkRelay {
+export class WalletLinkRelay implements Relay {
   private static callbacks = new Map<string, ResponseCallback>()
   private static accountRequestCallbackIds = new Set<string>()
 

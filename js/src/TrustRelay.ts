@@ -30,6 +30,7 @@ import {EthereumTransactionParams} from "./WalletLinkRelay";
 import {Web3ResponseMessage} from "./types/Web3ResponseMessage";
 import bind from "bind-decorator";
 import {WalletLinkProvider} from "./WalletLinkProvider";
+import {Relay} from "./Relay";
 
 type ResponseCallback = (response: Web3Response) => void
 
@@ -37,7 +38,7 @@ const BLOCKED_LOCAL_STORAGE_ERROR_MESSAGE =
     "Browser is blocking third-party localStorage usage. To continue, " +
     "turn off third-party storage blocking or whitelist WalletLink."
 
-export class TrustRelay {
+export class TrustRelay implements Relay {
   private static callbacks = new Map<string, ResponseCallback>()
   private static accountRequestCallbackIds = new Set<string>()
 

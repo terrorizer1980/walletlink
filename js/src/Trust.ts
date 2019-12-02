@@ -10,7 +10,7 @@ export class Trust {
     ): WalletLinkProvider {
         const trustRelay = new TrustRelay();
         const walletLink = new WalletLink({
-            relay: trustRelay as unknown as WalletLinkRelay,
+            relay: trustRelay,
             appName: 'Trust',
             appLogoUrl: ''
         });

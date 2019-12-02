@@ -22,11 +22,12 @@ import {
   ensureRegExpString
 } from "./util"
 import { EthereumTransactionParams, WalletLinkRelay } from "./WalletLinkRelay"
+import {Relay} from "./Relay";
 
 const LOCAL_STORAGE_ADDRESSES_KEY = "Addresses"
 
 export interface WalletLinkProviderOptions {
-  relay: WalletLinkRelay
+  relay: Relay
   jsonRpcUrl: string
   chainId?: number
 }
@@ -34,7 +35,7 @@ export interface WalletLinkProviderOptions {
 export class WalletLinkProvider extends EventEmitter implements Web3Provider {
   private readonly _filterPolyfill = new FilterPolyfill(this)
 
-  private readonly _relay: WalletLinkRelay
+  private readonly _relay: Relay
   private readonly _chainId: IntNumber
   private readonly _jsonRpcUrl: string
 
