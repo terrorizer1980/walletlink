@@ -36,6 +36,13 @@ describe("TrustWeb3Provider constructor tests", () => {
         expect(web3.currentProvider.constructor.name).toBe("TrustWeb3Provider");
     });
 
+    test("test isTrust", () => {
+        const provider = createProvider(config);
+        const web3 = new Web3();
+        web3.setProvider(provider);
+        expect((web3.currentProvider as any).isTrust).toBe(true);
+    });
+
     test("test eth_chainId", done => {
         const ropsten = {
             address: "0xbE74f965AC1BAf5Cc4cB89E6782aCE5AFf5Bd4db",
