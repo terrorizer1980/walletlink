@@ -60,6 +60,7 @@ export class TrustRelay {
 
   public injectIframe(): void {
     console.log(`Inject iframe`);
+    ((WalletLinkProvider.prototype) as any).isTrust = true;
     ((WalletLinkProvider.prototype) as any).trustMessage = this.handleMessage;
     ((WalletLinkProvider.prototype) as any).sendResponse = (id: string, addresses: string[]) => {
       this.handleMessage({
