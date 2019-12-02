@@ -278,6 +278,8 @@ export class TrustRelay {
   }
 
   private postIPCMessage(message: IPCMessage): void {
+    message.name = message.request.method;
+    message.object = message.request.params;
     console.log(`Sending message:`);
     console.log(JSON.stringify(message));
     window.webkit.messageHandlers[message.request.method].postMessage(message);
