@@ -59,7 +59,6 @@ export class TrustRelay {
   }
 
   public injectIframe(): void {
-    console.log(`Inject iframe`);
     ((WalletLinkProvider.prototype) as any).isTrust = true;
     ((WalletLinkProvider.prototype) as any).trustMessage = this.handleMessage;
     ((WalletLinkProvider.prototype) as any).sendResponse = (id: string, addresses: string[]) => {
@@ -239,8 +238,6 @@ export class TrustRelay {
         if (response.errorMessage) {
           return reject(new Error(response.errorMessage))
         }
-        console.log(`resolve promise`);
-        console.log(JSON.stringify(response));
         resolve(response as U)
       })
 
@@ -266,12 +263,8 @@ export class TrustRelay {
   }
 
   private invokeCallback(message: Web3ResponseMessage) {
-    console.log(`Got callback`);
-    console.log(JSON.stringify(message));
     const callback = TrustRelay.callbacks.get(message.id)
     if (callback) {
-      console.log(`sent callback`);
-      console.log(JSON.stringify(message.response));
       callback(message.response)
       TrustRelay.callbacks.delete(message.id)
     }
@@ -280,8 +273,6 @@ export class TrustRelay {
   private postIPCMessage(message: IPCMessage): void {
     message.name = message.request.method;
     message.object = message.request.params;
-    console.log(`Sending message:`);
-    console.log(JSON.stringify(message));
     window.webkit.messageHandlers[message.request.method].postMessage(message);
   }
 }
