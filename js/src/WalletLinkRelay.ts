@@ -5,6 +5,7 @@ import bind from "bind-decorator"
 import BN from "bn.js"
 import crypto from "crypto"
 import url from "url"
+import { Relay } from "./Relay"
 import { ScopedLocalStorage } from "./ScopedLocalStorage"
 import { AddressString, IntNumber, RegExpString } from "./types/common"
 import { IPCMessage } from "./types/IPCMessage"
@@ -48,7 +49,6 @@ import {
   WalletLinkNotification,
   WalletLinkNotificationOptions
 } from "./WalletLinkNotification"
-import {Relay} from "./Relay";
 
 const LOCAL_STORAGE_SESSION_ID_KEY = "SessionId"
 
@@ -455,9 +455,9 @@ export class WalletLinkRelay implements Relay {
       const { response } = message
 
       if (isRequestEthereumAccountsResponse(response)) {
-        Array.from(WalletLinkRelay.accountRequestCallbackIds.values()).forEach(
-          id => this.invokeCallback({ ...message, id })
-        )
+        Array.from(
+          WalletLinkRelay.accountRequestCallbackIds.values()
+        ).forEach(id => this.invokeCallback({ ...message, id }))
         WalletLinkRelay.accountRequestCallbackIds.clear()
         return
       }

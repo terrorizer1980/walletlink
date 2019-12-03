@@ -1,7 +1,10 @@
-import {WalletLinkProvider, WalletLinkProviderOptions} from "./WalletLinkProvider";
+import {
+  WalletLinkProvider,
+  WalletLinkProviderOptions
+} from "./WalletLinkProvider"
 
 export class TrustWeb3Provider extends WalletLinkProvider {
-    constructor(options: Readonly<WalletLinkProviderOptions>) {
-        super(options);
-    }
+  constructor(options: Readonly<WalletLinkProviderOptions>) {
+    super(options)
+  }
 }
