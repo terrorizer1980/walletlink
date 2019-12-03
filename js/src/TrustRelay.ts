@@ -32,6 +32,7 @@ import { bigIntStringFromBN, hexStringFromBuffer } from "./util"
 import * as walletLinkBlockedDialog from "./walletLinkBlockedDialog"
 import { WalletLinkProvider } from "./WalletLinkProvider"
 import { EthereumTransactionParams } from "./WalletLinkRelay"
+import { TrustWeb3Provider } from "./TrustWeb3Provider"
 
 type ResponseCallback = (response: Web3Response) => void
 
@@ -59,9 +60,9 @@ export class TrustRelay implements Relay {
   }
 
   public injectIframe(): void {
-    ;(WalletLinkProvider.prototype as any).isTrust = true
-    ;(WalletLinkProvider.prototype as any).trustMessage = this.handleMessage
-    ;(WalletLinkProvider.prototype as any).sendResponse = (
+    ;(TrustWeb3Provider.prototype as any).isTrust = true
+    ;(TrustWeb3Provider.prototype as any).trustMessage = this.handleMessage
+    ;(TrustWeb3Provider.prototype as any).sendResponse = (
       id: string,
       addresses: string[]
     ) => {
@@ -72,7 +73,7 @@ export class TrustRelay implements Relay {
         }
       } as MessageEvent)
     }
-    ;(WalletLinkProvider.prototype as any).sendError = (
+    ;(TrustWeb3Provider.prototype as any).sendError = (
       id: string,
       message: string
     ) => {

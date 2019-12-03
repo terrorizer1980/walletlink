@@ -15,4 +15,4 @@ jobs:
         npm install
         npm test
       env:
-        INFURA_API_KEY: test
+        INFURA_API_KEY: 376c261ffd284d46afa15e8aa5dc1e36

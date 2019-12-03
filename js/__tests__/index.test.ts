@@ -9,7 +9,9 @@ import { Trust } from "../src/Trust"
 const config = {
   address: "0x5Ee066cc1250E367423eD4Bad3b073241612811f",
   chainId: 1,
-  jsonRpcUrl: "https://mainnet.infura.io/v3/376c261ffd284d46afa15e8aa5dc1e36"
+  jsonRpcUrl: process.env.INFURA_API_KEY
+    ? `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`
+    : ""
 }
 
 const createProvider: (conf: any) => WalletLinkProvider = (conf: any) => {
