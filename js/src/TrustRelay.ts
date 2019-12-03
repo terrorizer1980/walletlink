@@ -1,4 +1,6 @@
+import bind from "bind-decorator"
 import crypto from "crypto"
+import { Relay } from "./Relay"
 import { ScopedLocalStorage } from "./ScopedLocalStorage"
 import { AddressString, IntNumber, RegExpString } from "./types/common"
 import { IPCMessage } from "./types/IPCMessage"
@@ -16,7 +18,8 @@ import {
 import { Web3RequestMessage } from "./types/Web3RequestMessage"
 import {
   ArbitraryResponse,
-  EthereumAddressFromSignedMessageResponse, isRequestEthereumAccountsResponse,
+  EthereumAddressFromSignedMessageResponse,
+  isRequestEthereumAccountsResponse,
   RequestEthereumAccountsResponse,
   ScanQRCodeResponse,
   SignEthereumMessageResponse,
@@ -24,20 +27,20 @@ import {
   SubmitEthereumTransactionResponse,
   Web3Response
 } from "./types/Web3Response"
+import { Web3ResponseMessage } from "./types/Web3ResponseMessage"
 import { bigIntStringFromBN, hexStringFromBuffer } from "./util"
 import * as walletLinkBlockedDialog from "./walletLinkBlockedDialog"
-import {EthereumTransactionParams} from "./WalletLinkRelay";
-import {Web3ResponseMessage} from "./types/Web3ResponseMessage";
-import bind from "bind-decorator";
-import {WalletLinkProvider} from "./WalletLinkProvider";
+import { WalletLinkProvider } from "./WalletLinkProvider"
+import { EthereumTransactionParams } from "./WalletLinkRelay"
+import { TrustWeb3Provider } from "./TrustWeb3Provider"
 
 type ResponseCallback = (response: Web3Response) => void
 
 const BLOCKED_LOCAL_STORAGE_ERROR_MESSAGE =
-    "Browser is blocking third-party localStorage usage. To continue, " +
-    "turn off third-party storage blocking or whitelist WalletLink."
+  "Browser is blocking third-party localStorage usage. To continue, " +
+  "turn off third-party storage blocking or whitelist WalletLink."
 
-export class TrustRelay {
+export class TrustRelay implements Relay {
   private static callbacks = new Map<string, ResponseCallback>()
   private static accountRequestCallbackIds = new Set<string>()
 
@@ -48,9 +51,7 @@ export class TrustRelay {
   private localStorageBlocked = false
 
   constructor() {
-    this.storage = new ScopedLocalStorage(
-        `__WalletLink__:trust`
-    );
+    this.storage = new ScopedLocalStorage(`__WalletLink__:trust`)
   }
 
   public setAppInfo(appName: string, appLogoUrl: string | null): void {
@@ -59,26 +60,30 @@ export class TrustRelay {
   }
 
   public injectIframe(): void {
-    console.log(`Inject iframe`);
-    ((WalletLinkProvider.prototype) as any).isTrust = true;
-    ((WalletLinkProvider.prototype) as any).trustMessage = this.handleMessage;
-    ((WalletLinkProvider.prototype) as any).sendResponse = (id: string, addresses: string[]) => {
+    ;(TrustWeb3Provider.prototype as any).isTrust = true
+    ;(TrustWeb3Provider.prototype as any).trustMessage = this.handleMessage
+    ;(TrustWeb3Provider.prototype as any).sendResponse = (
+      id: string,
+      addresses: string[]
+    ) => {
       this.handleMessage({
         data: {
           id,
-          response: {result: addresses}
-        }
-      } as MessageEvent);
-    };
-
-    ((WalletLinkProvider.prototype) as any).sendError = (id: string, message: string) => {
-      this.handleMessage({
-        data: {
-          id,
-          response: {errorMessage: message}
+          response: { result: addresses }
         }
       } as MessageEvent)
-    };
+    }
+    ;(TrustWeb3Provider.prototype as any).sendError = (
+      id: string,
+      message: string
+    ) => {
+      this.handleMessage({
+        data: {
+          id,
+          response: { errorMessage: message }
+        }
+      } as MessageEvent)
+    }
   }
 
   public getStorageItem(key: string): string | null {
@@ -91,9 +96,9 @@ export class TrustRelay {
 
   public requestEthereumAccounts(): Promise<RequestEthereumAccountsResponse> {
     return this.sendRequest<
-        RequestEthereumAccountsRequest,
-        RequestEthereumAccountsResponse
-        >({
+      RequestEthereumAccountsRequest,
+      RequestEthereumAccountsResponse
+    >({
       method: Web3Method.requestEthereumAccounts,
       params: {
         appName: this.appName,
@@ -103,15 +108,15 @@ export class TrustRelay {
   }
 
   public signEthereumMessage(
-      message: Buffer,
-      address: AddressString,
-      addPrefix: boolean,
-      typedDataJson?: string | null
+    message: Buffer,
+    address: AddressString,
+    addPrefix: boolean,
+    typedDataJson?: string | null
   ): Promise<SignEthereumMessageResponse> {
     return this.sendRequest<
-        SignEthereumMessageRequest,
-        SignEthereumMessageResponse
-        >({
+      SignEthereumMessageRequest,
+      SignEthereumMessageResponse
+    >({
       method: Web3Method.signEthereumMessage,
       params: {
         message: hexStringFromBuffer(message, true),
@@ -123,14 +128,14 @@ export class TrustRelay {
   }
 
   public ethereumAddressFromSignedMessage(
-      message: Buffer,
-      signature: Buffer,
-      addPrefix: boolean
+    message: Buffer,
+    signature: Buffer,
+    addPrefix: boolean
   ): Promise<EthereumAddressFromSignedMessageResponse> {
     return this.sendRequest<
-        EthereumAddressFromSignedMessageRequest,
-        EthereumAddressFromSignedMessageResponse
-        >({
+      EthereumAddressFromSignedMessageRequest,
+      EthereumAddressFromSignedMessageResponse
+    >({
       method: Web3Method.ethereumAddressFromSignedMessage,
       params: {
         message: hexStringFromBuffer(message, true),
@@ -141,12 +146,12 @@ export class TrustRelay {
   }
 
   public signEthereumTransaction(
-      params: EthereumTransactionParams
+    params: EthereumTransactionParams
   ): Promise<SignEthereumTransactionResponse> {
     return this.sendRequest<
-        SignEthereumTransactionRequest,
-        SignEthereumTransactionResponse
-        >({
+      SignEthereumTransactionRequest,
+      SignEthereumTransactionResponse
+    >({
       method: Web3Method.signEthereumTransaction,
       params: {
         fromAddress: params.fromAddress,
@@ -155,8 +160,8 @@ export class TrustRelay {
         data: hexStringFromBuffer(params.data, true),
         nonce: params.nonce,
         gasPriceInWei: params.gasPriceInWei
-            ? bigIntStringFromBN(params.gasPriceInWei)
-            : null,
+          ? bigIntStringFromBN(params.gasPriceInWei)
+          : null,
         gasLimit: params.gasLimit ? bigIntStringFromBN(params.gasLimit) : null,
         chainId: params.chainId,
         shouldSubmit: false
@@ -165,12 +170,12 @@ export class TrustRelay {
   }
 
   public signAndSubmitEthereumTransaction(
-      params: EthereumTransactionParams
+    params: EthereumTransactionParams
   ): Promise<SubmitEthereumTransactionResponse> {
     return this.sendRequest<
-        SignEthereumTransactionRequest,
-        SubmitEthereumTransactionResponse
-        >({
+      SignEthereumTransactionRequest,
+      SubmitEthereumTransactionResponse
+    >({
       method: Web3Method.signEthereumTransaction,
       params: {
         fromAddress: params.fromAddress,
@@ -179,8 +184,8 @@ export class TrustRelay {
         data: hexStringFromBuffer(params.data, true),
         nonce: params.nonce,
         gasPriceInWei: params.gasPriceInWei
-            ? bigIntStringFromBN(params.gasPriceInWei)
-            : null,
+          ? bigIntStringFromBN(params.gasPriceInWei)
+          : null,
         gasLimit: params.gasLimit ? bigIntStringFromBN(params.gasLimit) : null,
         chainId: params.chainId,
         shouldSubmit: true
@@ -189,13 +194,13 @@ export class TrustRelay {
   }
 
   public submitEthereumTransaction(
-      signedTransaction: Buffer,
-      chainId: IntNumber
+    signedTransaction: Buffer,
+    chainId: IntNumber
   ): Promise<SubmitEthereumTransactionResponse> {
     return this.sendRequest<
-        SubmitEthereumTransactionRequest,
-        SubmitEthereumTransactionResponse
-        >({
+      SubmitEthereumTransactionRequest,
+      SubmitEthereumTransactionResponse
+    >({
       method: Web3Method.submitEthereumTransaction,
       params: {
         signedTransaction: hexStringFromBuffer(signedTransaction, true),
@@ -219,7 +224,7 @@ export class TrustRelay {
   }
 
   public sendRequest<T extends Web3Request, U extends Web3Response>(
-      request: T
+    request: T
   ): Promise<U> {
     if (this.localStorageBlocked) {
       walletLinkBlockedDialog.show()
@@ -229,7 +234,7 @@ export class TrustRelay {
       const id = crypto.randomBytes(8).toString("hex")
 
       const isRequestAccounts =
-          request.method === Web3Method.requestEthereumAccounts
+        request.method === Web3Method.requestEthereumAccounts
 
       if (isRequestAccounts) {
         TrustRelay.accountRequestCallbackIds.add(id)
@@ -239,8 +244,6 @@ export class TrustRelay {
         if (response.errorMessage) {
           return reject(new Error(response.errorMessage))
         }
-        console.log(`resolve promise`);
-        console.log(JSON.stringify(response));
         resolve(response as U)
       })
 
@@ -250,11 +253,11 @@ export class TrustRelay {
 
   @bind
   private handleMessage(evt: MessageEvent): void {
-    const message: Web3ResponseMessage = evt.data;
+    const message: Web3ResponseMessage = evt.data
 
     if (isRequestEthereumAccountsResponse(message)) {
-      Array.from(TrustRelay.accountRequestCallbackIds.values()).forEach(
-          id => this.invokeCallback({ ...message, id })
+      Array.from(TrustRelay.accountRequestCallbackIds.values()).forEach(id =>
+        this.invokeCallback({ ...message, id })
       )
       TrustRelay.accountRequestCallbackIds.clear()
       return
@@ -262,26 +265,19 @@ export class TrustRelay {
 
     this.invokeCallback(message)
     return
-
   }
 
   private invokeCallback(message: Web3ResponseMessage) {
-    console.log(`Got callback`);
-    console.log(JSON.stringify(message));
     const callback = TrustRelay.callbacks.get(message.id)
     if (callback) {
-      console.log(`sent callback`);
-      console.log(JSON.stringify(message.response));
       callback(message.response)
       TrustRelay.callbacks.delete(message.id)
     }
   }
 
   private postIPCMessage(message: IPCMessage): void {
-    message.name = message.request.method;
-    message.object = message.request.params;
-    console.log(`Sending message:`);
-    console.log(JSON.stringify(message));
-    window.webkit.messageHandlers[message.request.method].postMessage(message);
+    message.name = message.request.method
+    message.object = message.request.params
+    window.webkit.messageHandlers[message.request.method].postMessage(message)
   }
 }

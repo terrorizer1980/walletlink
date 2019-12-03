@@ -5,6 +5,7 @@ import bind from "bind-decorator"
 import BN from "bn.js"
 import crypto from "crypto"
 import url from "url"
+import { Relay } from "./Relay"
 import { ScopedLocalStorage } from "./ScopedLocalStorage"
 import { AddressString, IntNumber, RegExpString } from "./types/common"
 import { IPCMessage } from "./types/IPCMessage"
@@ -72,7 +73,7 @@ const BLOCKED_LOCAL_STORAGE_ERROR_MESSAGE =
   "Browser is blocking third-party localStorage usage. To continue, " +
   "turn off third-party storage blocking or whitelist WalletLink."
 
-export class WalletLinkRelay {
+export class WalletLinkRelay implements Relay {
   private static callbacks = new Map<string, ResponseCallback>()
   private static accountRequestCallbackIds = new Set<string>()
 
@@ -454,9 +455,9 @@ export class WalletLinkRelay {
       const { response } = message
 
       if (isRequestEthereumAccountsResponse(response)) {
-        Array.from(WalletLinkRelay.accountRequestCallbackIds.values()).forEach(
-          id => this.invokeCallback({ ...message, id })
-        )
+        Array.from(
+          WalletLinkRelay.accountRequestCallbackIds.values()
+        ).forEach(id => this.invokeCallback({ ...message, id }))
         WalletLinkRelay.accountRequestCallbackIds.clear()
         return
       }

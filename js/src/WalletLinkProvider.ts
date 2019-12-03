@@ -5,6 +5,7 @@ import BN from "bn.js"
 import eip712 from "eth-eip712-util"
 import { EventEmitter } from "events"
 import { FilterPolyfill } from "./FilterPolyfill"
+import { Relay } from "./Relay"
 import { AddressString, Callback, IntNumber } from "./types/common"
 import { JSONRPCMethod, JSONRPCRequest, JSONRPCResponse } from "./types/JSONRPC"
 import {
@@ -21,12 +22,12 @@ import {
   ensureIntNumber,
   ensureRegExpString
 } from "./util"
-import { EthereumTransactionParams, WalletLinkRelay } from "./WalletLinkRelay"
+import { EthereumTransactionParams } from "./WalletLinkRelay"
 
 const LOCAL_STORAGE_ADDRESSES_KEY = "Addresses"
 
 export interface WalletLinkProviderOptions {
-  relay: WalletLinkRelay
+  relay: Relay
   jsonRpcUrl: string
   chainId?: number
 }
@@ -34,7 +35,7 @@ export interface WalletLinkProviderOptions {
 export class WalletLinkProvider extends EventEmitter implements Web3Provider {
   private readonly _filterPolyfill = new FilterPolyfill(this)
 
-  private readonly _relay: WalletLinkRelay
+  private readonly _relay: Relay
   private readonly _chainId: IntNumber
   private readonly _jsonRpcUrl: string
 

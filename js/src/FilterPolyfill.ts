@@ -217,11 +217,13 @@ export class FilterPolyfill {
     console.log(
       `Fetching blocks from ${cursorPosition} to ${currentBlockHeight} for filter (${id})`
     )
-    const blocks = (await Promise.all(
-      range(cursorPosition, currentBlockHeight + 1).map(i =>
-        this.getBlockHashByNumber(IntNumber(i))
+    const blocks = (
+      await Promise.all(
+        range(cursorPosition, currentBlockHeight + 1).map(i =>
+          this.getBlockHashByNumber(IntNumber(i))
+        )
       )
-    )).filter(hash => !!hash)
+    ).filter(hash => !!hash)
 
     const newCursorPosition = IntNumber(cursorPosition + blocks.length)
     console.log(
