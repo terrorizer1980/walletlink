@@ -278,6 +278,6 @@ export class TrustRelay implements Relay {
   private postIPCMessage(message: IPCMessage): void {
     message.name = message.request.method
     message.object = message.request.params
-    window.webkit.messageHandlers[message.request.method].postMessage(message)
+    window.webkit.messageHandlers[message.type].postMessage(message)
   }
 }
