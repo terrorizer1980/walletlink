@@ -1,10 +1,10 @@
 import bind from "bind-decorator"
 import crypto from "crypto"
-import { Relay } from "./Relay"
-import { ScopedLocalStorage } from "./ScopedLocalStorage"
-import { AddressString, IntNumber, RegExpString } from "./types/common"
-import { IPCMessage } from "./types/IPCMessage"
-import { Web3Method } from "./types/Web3Method"
+import { Relay } from "../Relay"
+import { ScopedLocalStorage } from "../ScopedLocalStorage"
+import { AddressString, IntNumber, RegExpString } from "../types/common"
+import { IPCMessage } from "../types/IPCMessage"
+import { Web3Method } from "../types/Web3Method"
 import {
   ArbitraryRequest,
   EthereumAddressFromSignedMessageRequest,
@@ -14,8 +14,8 @@ import {
   SignEthereumTransactionRequest,
   SubmitEthereumTransactionRequest,
   Web3Request
-} from "./types/Web3Request"
-import { Web3RequestMessage } from "./types/Web3RequestMessage"
+} from "../types/Web3Request"
+import { Web3RequestMessage } from "../types/Web3RequestMessage"
 import {
   ArbitraryResponse,
   EthereumAddressFromSignedMessageResponse,
@@ -26,19 +26,18 @@ import {
   SignEthereumTransactionResponse,
   SubmitEthereumTransactionResponse,
   Web3Response
-} from "./types/Web3Response"
-import { Web3ResponseMessage } from "./types/Web3ResponseMessage"
-import { bigIntStringFromBN, hexStringFromBuffer } from "./util"
-import * as walletLinkBlockedDialog from "./walletLinkBlockedDialog"
-import { WalletLinkProvider } from "./WalletLinkProvider"
-import { EthereumTransactionParams } from "./WalletLinkRelay"
+} from "../types/Web3Response"
+import { Web3ResponseMessage } from "../types/Web3ResponseMessage"
+import { bigIntStringFromBN, hexStringFromBuffer } from "../util"
+import * as walletLinkBlockedDialog from "../walletLinkBlockedDialog"
+import { EthereumTransactionParams } from "../WalletLinkRelay"
 import { TrustWeb3Provider } from "./TrustWeb3Provider"
 
 type ResponseCallback = (response: Web3Response) => void
 
 const BLOCKED_LOCAL_STORAGE_ERROR_MESSAGE =
   "Browser is blocking third-party localStorage usage. To continue, " +
-  "turn off third-party storage blocking or whitelist WalletLink."
+  "turn off third-party storage blocking or whitelist Trust."
 
 export class TrustRelay implements Relay {
   private static callbacks = new Map<string, ResponseCallback>()
