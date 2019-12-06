@@ -1,7 +1,7 @@
 // Copyright (c) 2018-2019 Coinbase, Inc. <https://coinbase.com/>
 // Licensed under the Apache License, version 2.0
 
-import { Trust } from "./Trust"
+import { Trust } from "./trust/Trust"
 import { WalletLink } from "./WalletLink"
 import { WalletLinkProvider } from "./WalletLinkProvider"
 

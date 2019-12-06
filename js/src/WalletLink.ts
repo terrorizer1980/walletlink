@@ -2,7 +2,7 @@
 // Licensed under the Apache License, version 2.0
 
 import { Relay } from "./Relay"
-import { TrustWeb3Provider } from "./TrustWeb3Provider"
+import { TrustWeb3Provider } from "./trust/TrustWeb3Provider"
 import { WalletLinkNotification } from "./WalletLinkNotification"
 import { WalletLinkProvider } from "./WalletLinkProvider"
 import { WalletLinkRelay } from "./WalletLinkRelay"

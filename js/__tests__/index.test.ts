@@ -4,7 +4,7 @@ require("isomorphic-fetch")
 import Web3 from "web3"
 import { IpcProvider } from "web3-core"
 import { WalletLinkProvider } from "../src"
-import { Trust } from "../src/Trust"
+import { Trust } from "../src/trust/Trust"
 
 const config = {
   address: "0x5Ee066cc1250E367423eD4Bad3b073241612811f",
@@ -15,7 +15,7 @@ const config = {
 }
 
 const createProvider: (conf: any) => WalletLinkProvider = (conf: any) => {
-  return Trust.TrustWeb3Provider(conf.jsonRpcUrl, conf.chainId)
+  return Trust.TrustWeb3Provider(conf.jsonRpcUrl, conf.chainId, "jest app")
 }
 
 describe("TrustWeb3Provider constructor tests", () => {
